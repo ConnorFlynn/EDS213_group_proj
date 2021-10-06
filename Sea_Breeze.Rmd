@@ -1,0 +1,56 @@
+---
+title: "Sea_Breeze"
+author: "Squaaa"
+date: "10/6/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rerddapXtracto)
+```
+
+```{r}
+require("rerddap")
+
+
+#SST for each Buoy
+E_sst <- griddap('erdMWsstd1day_LonPM180', #Need to determine approp grid for each buoy
+ time = c('last','last'),
+ latitude = c(31.75, 35.0),
+ longitude = c(-121.5, -116.5),
+ fmt = "csv")
+
+W_sst <- griddap('erdMWsstd1day_LonPM180', #Need to determine approp grid for each buoy
+ time = c('last','last'),
+ latitude = c(31.75, 35.0),
+ longitude = c(-121.5, -116.5),
+ fmt = "csv")
+
+SM_sst <- griddap('erdMWsstd1day_LonPM180', #Need to determine approp grid for each buoy
+ time = c('last','last'),
+ latitude = c(31.75, 35.0),
+ longitude = c(-121.5, -116.5),
+ fmt = "csv")
+
+
+#Chloro for each Buoy
+E_chloro <- griddap('erdMWchla1day_LonPM180', #Need to determine approp grid for each buoy
+  time = c('last','last'),
+  latitude = c(31.75, 35.0),
+  longitude = c(-121.5, -116.5),
+  fmt = "csv")
+
+W_chloro <- griddap('erdMWchla1day_LonPM180', #Need to determine approp grid for each buoy
+  time = c('last','last'),
+  latitude = c(31.75, 35.0),
+  longitude = c(-121.5, -116.5),
+  fmt = "csv")
+
+SM_chloro <- griddap('erdMWchla1day_LonPM180', #Need to determine approp grid for each buoy
+  time = c('last','last'),
+  latitude = c(31.75, 35.0),
+  longitude = c(-121.5, -116.5),
+  fmt = "csv")
+```
+
