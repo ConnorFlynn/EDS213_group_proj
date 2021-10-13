@@ -12,6 +12,7 @@ library(tidyverse)
 ```
 
 ```{r}
+# I found the SST and Chloro data through an old co-worker who was working with the Aqua Modis satelite. # I found the buoy data by scrolling through the NOAA site. See README.md for more info about data. 
 
 #Read in Aqua Modis Data
 require("rerddap")
