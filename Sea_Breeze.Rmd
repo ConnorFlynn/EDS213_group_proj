@@ -81,13 +81,14 @@ sst <- sst[-c(2)] #rewmove altitude column
 
 final_sst <- sst %>% 
   filter(sst > 0) %>% #remove NAs
-  mutate(sst = (sst * (9/5) + 32 )) #convert to F
+  mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
+  mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparision. 
 
 
 ```
 
 ```{r}
-#West Buoy figure (SST, Wind, Chloro(?))
+#West Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
 
 west_sst <- final_sst %>% 
   filter(location == "west") #filter for site
@@ -100,7 +101,7 @@ ggplot() +
 
 
 ```{r}
-#East Buoy figure (SST, Wind, Chloro(?))
+#East Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
 
 east_sst <- final_sst %>% 
   filter(location == "east") #filter for site
@@ -113,7 +114,7 @@ ggplot() +
 
 
 ```{r}
-#Santa Monica Buoy (SST, Wind, Chloro(?))
+#Santa Monica Buoy (SST, Wind, Chloro(?)) <- We need monthly means
 
 SM_sst <- final_sst %>% 
   filter(location == "SM") #filter for site
