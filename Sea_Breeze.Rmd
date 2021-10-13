@@ -7,50 +7,120 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(rerddapXtracto)
+library(rerddap)
+library(tidyverse)
 ```
 
 ```{r}
+
+#Read in Aqua Modis Data
 require("rerddap")
 
 
 #SST for each Buoy
-E_sst <- griddap('erdMWsstd1day_LonPM180', #Need to determine approp grid for each buoy
- time = c('last','last'),
- latitude = c(31.75, 35.0),
- longitude = c(-121.5, -116.5),
+E_sst <- griddap('erdMWsstd8day_LonPM180', # 8 day composite SST E_buoy
+ time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
+ latitude = c(34.0, 34.5), #grid surrounding buoy
+ longitude = c(-119.5, -120), #grid surrounding buoy
+ fmt = "csv") 
+
+E_sst <- E_sst %>% 
+  add_column(location = "east") #add ID column
+
+W_sst <- griddap('erdMWsstd8day_LonPM180', # 8 day composite SST W_buoy
+ time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
+ latitude = c(34.0, 34.5), #grid surrounding buoy
+ longitude = c(-120, -120.5), #grid surrounding buoy
  fmt = "csv")
 
-W_sst <- griddap('erdMWsstd1day_LonPM180', #Need to determine approp grid for each buoy
- time = c('last','last'),
- latitude = c(31.75, 35.0),
- longitude = c(-121.5, -116.5),
+W_sst <- W_sst %>% 
+  add_column(location = "west") #add ID column
+
+SM_sst <- griddap('erdMWsstd8day_LonPM180', # 8 day composite SST SM_buoy
+ time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
+ latitude = c(33.5, 34.0), #grid surrounding buoy
+ longitude = c(-118.75, -119.25), #grid surrounding buoy
  fmt = "csv")
 
-SM_sst <- griddap('erdMWsstd1day_LonPM180', #Need to determine approp grid for each buoy
- time = c('last','last'),
- latitude = c(31.75, 35.0),
- longitude = c(-121.5, -116.5),
- fmt = "csv")
+SM_sst <- SM_sst %>%
+  add_column(location = "SM") #add ID column
+
+sst <- rbind(E_sst, W_sst, SM_sst) #bind data
+
+
 
 
 #Chloro for each Buoy
-E_chloro <- griddap('erdMWchla1day_LonPM180', #Need to determine approp grid for each buoy
-  time = c('last','last'),
-  latitude = c(31.75, 35.0),
-  longitude = c(-121.5, -116.5),
+E_chloro <- griddap('erdMWchla8day_LonPM180',  # 8 day composite Chlorophyll E_buoy
+  time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
+  latitude = c(34.0, 34.5), #grid surrounding buoy
+  longitude = c(-119.5, -120), #grid surrounding buoy
   fmt = "csv")
 
-W_chloro <- griddap('erdMWchla1day_LonPM180', #Need to determine approp grid for each buoy
-  time = c('last','last'),
-  latitude = c(31.75, 35.0),
-  longitude = c(-121.5, -116.5),
+W_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll E_buoy
+  time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
+  latitude = c(34.0, 34.5), #grid surrounding buoy
+  longitude = c(-120, -120.5), #grid surrounding buoy
   fmt = "csv")
 
-SM_chloro <- griddap('erdMWchla1day_LonPM180', #Need to determine approp grid for each buoy
-  time = c('last','last'),
-  latitude = c(31.75, 35.0),
-  longitude = c(-121.5, -116.5),
+SM_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll SM_buoy
+  time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
+  latitude = c(33.5, 34.0), #grid surrounding buoy
+  longitude = c(-118.75, -119.25), #grid surrounding buoy
   fmt = "csv")
+
+chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
+
+
+```
+
+```{r}
+#Clean Data
+sst <- sst[-c(2)] #rewmove altitude column
+
+final_sst <- sst %>% 
+  filter(sst > 0) %>% #remove NAs
+  mutate(sst = (sst * (9/5) + 32 )) #convert to F
+
+
+```
+
+```{r}
+#West Buoy figure (SST, Wind, Chloro(?))
+
+west_sst <- final_sst %>% 
+  filter(location == "west") #filter for site
+
+ggplot() +
+  geom_point(data = west_sst, aes(x = time, y = sst), alpha = 0.3)
+
+
+```
+
+
+```{r}
+#East Buoy figure (SST, Wind, Chloro(?))
+
+east_sst <- final_sst %>% 
+  filter(location == "east") #filter for site
+
+ggplot() +
+  geom_point(data = east_sst, aes(x = time, y = sst))
+
+
+```
+
+
+```{r}
+#Santa Monica Buoy (SST, Wind, Chloro(?))
+
+SM_sst <- final_sst %>% 
+  filter(location == "SM") #filter for site
+
+ggplot() +
+  geom_point(data = SM_sst, aes(x = time, y = sst))
+
+
+
 ```
 
