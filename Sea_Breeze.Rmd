@@ -123,7 +123,7 @@ wind_avg <- wind %>%
 
 
 ```{r}
-#clean data for sst data
+#clean data for sst date
 sst_clean <- sst %>% 
   mutate(date = ymd_hms(time, tz = "UTC")) %>% 
   mutate(ymd_date = ymd(date, tz = NULL)) %>% 
@@ -151,7 +151,7 @@ final_sst_avg <- final_sst %>%
 
 ```{r}
 
-wind_sst <- left_join(wind, final_sst, by = c("date", "location"))
+wind_sst <- left_join(wind, final_sst, by = c("date", "location"), na.rm = T)
 
 ```
 
