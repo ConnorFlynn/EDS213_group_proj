@@ -132,7 +132,7 @@ sst_clean <- sst %>%
 final_sst <- sst_clean %>% 
   filter(sst > 0) %>% #remove NAs
   mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
-  mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparision. 
+  mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparison. 
 
 
 ```
@@ -140,18 +140,19 @@ final_sst <- sst_clean %>%
 
 ```{r}
 
-wind_sst <- left_join(wind, final_sst, by = c("date", "location"), na.rm = T)
+wind_sst <- left_join(wind, final_sst, by = c("date"))
 
 ```
 
 ```{r}
 #West Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
 
-west_sst <- final_sst %>% 
+west <- wind_sst %>% 
   filter(location == "west") #filter for site
 
-ggplot() +
-  geom_point(data = west_sst, aes(x = time, y = sst), alpha = 0.3)
+ggplot(data = west) +
+  geom_point(aes(x = date, y = sst)) +
+  geom_point(aes(x = date , y = m.s))
 
 
 ```
