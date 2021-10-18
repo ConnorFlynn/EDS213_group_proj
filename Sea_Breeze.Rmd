@@ -72,7 +72,7 @@ SM_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll SM_
 chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 
-#Wind data for each buoy and data
+#Wind data for each buoy and data cleaning
 tab_E <- read.table(here("data","east_wind.txt"), comment="", header=TRUE)
 write.csv(tab_E, "east_wind.csv", row.names=F, quote=F)
 
@@ -171,6 +171,7 @@ final_chloro_avg <- chloro_clean %>%
 ```
 
 ```{r}
+#combine daily wind and sst means
 
 wind_sst <- left_join(wind_avg, final_sst_avg, by = c("date", "location"))
 
