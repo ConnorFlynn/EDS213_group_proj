@@ -112,7 +112,12 @@ wind <- rbind(E_wind, W_wind, SM_wind)
 
 wind <- wind %>%
   unite("date", year:month:day, sep = "-") %>% 
-  mutate(date = ymd(date, tz = NULL))
+  mutate(date = ymd(date, tz = NULL)) %>% 
+  mutate(m.s = as.numeric(m.s))
+
+wind_avg <- wind %>% 
+  group_by(location, date) %>% 
+  summarize(mean = mean(m.s))
 
 ```
 
@@ -133,6 +138,12 @@ final_sst <- sst_clean %>%
   filter(sst > 0) %>% #remove NAs
   mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
   mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparison. 
+
+
+final_sst_avg <- final_sst %>% 
+  group_by(location, date) %>% 
+  summarize(mean = mean(sst))
+
 
 
 ```
