@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(rerddap)
 library(tidyverse)
 library(here)
+library(lubridate)
 ```
 
 ```{r}
@@ -97,6 +98,14 @@ clean_date <- wind %>%
   unite("day_hour", day:hour, sep = "-") %>%
 
 ```
+
+
+```{r}
+clean_sst_date <- sst %>% 
+  mutate(dateTime = ymd_hms(time, tz = "UTC")) %>% 
+  mutate(ymd_date = ymd(dateTime, tz = NULL))
+```
+
 
 ```{r}
 #Clean sst Data
