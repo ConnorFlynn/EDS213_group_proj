@@ -86,8 +86,20 @@ wind <- rbind(E_wind, W_wind, SM_wind)
 
 ```
 
+
 ```{r}
-#Clean Data
+#clean date format for wind and SST
+
+clean_date <- wind %>%
+ 
+  mutate(dateTime = ymd_hms( dateTime, tz = "PST")
+         
+  unite("day_hour", day:hour, sep = "-") %>%
+
+```
+
+```{r}
+#Clean sst Data
 sst <- sst[-c(2)] #remove altitude column
 
 final_sst <- sst %>% 
