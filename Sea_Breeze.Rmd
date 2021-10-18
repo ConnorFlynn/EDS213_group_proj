@@ -76,30 +76,40 @@ chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 
 #Wind data for each buoy
-E_wind <- read.csv(here("data", "noaa_east_data.csv")) %>% 
+tab_E <- read.table(here("data","east_wind.txt"), comment="", header=TRUE)
+write.csv(tab_E, "east_wind.csv", row.names=F, quote=F)
+
+E_wind <- read.csv(here("east_wind.csv")) %>% 
   add_column(location = "east") %>% 
-  select(c("X.yr", "mo", "dy", "m.s", "location")) %>% 
-  rename(year = X.yr,
-         month = mo,
-         day = dy)
+  select(c("X.YY", "MM", "DD", "WSPD", "location"))  %>% 
+  rename(year = X.YY,
+         month = MM,
+         day = DD)
+E_wind <- E_wind[-c(1),]
   
 
-W_wind <- read.csv(here("data", "W_buoy_data_updated.csv" ))%>% 
+tab_W <- read.table(here("data","west_wind.txt"), comment="", header=TRUE)
+write.csv(tab_W, "west_wind.csv", row.names=F, quote=F)
+
+W_wind <- read.csv(here("west_wind.csv"))%>% 
   add_column(location = "west") %>% 
-  select(c("X.yr", "mo", "dy", "mn.degT.m.s..m.s.....m...sec...sec..4", "location")) %>%
-  rename(m.s = mn.degT.m.s..m.s.....m...sec...sec..4,
-         year = X.yr,
-         month = mo,
-         day = dy)
+  select(c("X.YY", "MM", "DD", "WSPD", "location"))  %>% 
+  rename(year = X.YY,
+         month = MM,
+         day = DD)
+W_wind <- W_wind[-c(1),]
 
 
-  
-SM_wind <- read.csv(here("data", "noaa_santa_monica_data.csv"))%>% 
+tab_SM <- read.table(here("data","SM_wind.txt"), comment="", header=TRUE)
+write.csv(tab_SM, "SM_wind.csv", row.names=F, quote=F)
+
+SM_wind <- read.csv(here("SM_wind.csv"))%>% 
   add_column(location = "SM") %>% 
-  select(c("X.yr", "mo", "dy", "m.s", "location")) %>% 
-  rename(year = X.yr,
-         month = mo,
-         day = dy)
+  select(c("X.YY", "MM", "DD", "WSPD", "location"))  %>% 
+  rename(year = X.YY,
+         month = MM,
+         day = DD)
+SM_wind <- SM_wind[-c(1),]
 
 wind <- rbind(E_wind, W_wind, SM_wind)
 
@@ -108,16 +118,16 @@ wind <- rbind(E_wind, W_wind, SM_wind)
 
 
 ```{r}
-#clean date format for wind 
+#clean date format and summarize with daily means for wind
 
 wind <- wind %>%
   unite("date", year:month:day, sep = "-") %>% 
   mutate(date = ymd(date, tz = NULL)) %>% 
-  mutate(m.s = as.numeric(m.s))
+  mutate(WSPD = as.numeric(WSPD))
 
 wind_avg <- wind %>% 
   group_by(location, date) %>% 
-  summarize(mean = mean(m.s))
+  summarize(mean_wind = mean(WSPD))
 
 ```
 
@@ -133,7 +143,7 @@ sst_clean <- sst %>%
 
 
 ```{r}
-#Clean sst Data
+#Clean sst Data and summarize by daily means
 final_sst <- sst_clean %>% 
   filter(sst > 0) %>% #remove NAs
   mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
@@ -151,7 +161,7 @@ final_sst_avg <- final_sst %>%
 
 ```{r}
 
-wind_sst <- left_join(wind, final_sst, by = c("date"))
+wind_sst <- left_join(wind_avg, final_sst_avg, by = c("date", "location"))
 
 ```
 
