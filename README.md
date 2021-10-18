@@ -14,3 +14,6 @@
 ##### Using R Studio, we will use the function rbind() to combine the datsets with time as the primary key, and analyze patterns between the two variables.
 
 [Sea_Breeze_NCEAS_Data_Provenance](https://docs.google.com/spreadsheets/d/19nLfPOXQPWDb65sirY04yWkPs-oYS9otppxUtECR_8U/edit?usp=sharing)
+
+### Data Management Plan: In Issues
+Issue #2
