@@ -77,7 +77,7 @@ chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 ```{r}
 #Clean Data
-sst <- sst[-c(2)] #rewmove altitude column
+sst <- sst[-c(2)] #remove altitude column
 
 final_sst <- sst %>% 
   filter(sst > 0) %>% #remove NAs
