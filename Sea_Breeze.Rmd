@@ -78,16 +78,28 @@ chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 #Wind data for each buoy
 E_wind <- read.csv(here("data", "noaa_east_data.csv")) %>% 
   add_column(location = "east") %>% 
-  select(c("X.yr", "mo", "dy", "m.s", "location"))
+  select(c("X.yr", "mo", "dy", "m.s", "location")) %>% 
+  rename(year = X.yr,
+         month = mo,
+         day = dy)
   
 
-W_wind <- read.csv(here("data", "noaa_west_data.csv" ))%>% 
+W_wind <- read.csv(here("data", "W_buoy_data_updated.csv" ))%>% 
   add_column(location = "west") %>% 
-  select(c("X.yr", "mo", "dy", "m.s", "location"))
+  select(c("X.yr", "mo", "dy", "mn.degT.m.s..m.s.....m...sec...sec..4", "location")) %>%
+  rename(m.s = mn.degT.m.s..m.s.....m...sec...sec..4,
+         year = X.yr,
+         month = mo,
+         day = dy)
+
+
   
 SM_wind <- read.csv(here("data", "noaa_santa_monica_data.csv"))%>% 
   add_column(location = "SM") %>% 
-  select(c("X.yr", "mo", "dy", "m.s", "location"))
+  select(c("X.yr", "mo", "dy", "m.s", "location")) %>% 
+  rename(year = X.yr,
+         month = mo,
+         day = dy)
 
 wind <- rbind(E_wind, W_wind, SM_wind)
 
@@ -98,11 +110,8 @@ wind <- rbind(E_wind, W_wind, SM_wind)
 ```{r}
 #clean date format for wind 
 
-clean_date <- wind %>%
- 
-  mutate(dateTime = ymd_hms( dateTime, tz = "PST")
-         
-  unite("day_hour", day:hour, sep = "-") %>%
+wind <- wind %>%
+  unite("date", year:month:day, sep = "-") 
 
 ```
 
@@ -123,6 +132,13 @@ final_sst <- sst %>%
   mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
   mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparision. 
 
+
+```
+
+
+```{r}
+
+wind_sst <- full_join(wind, final_sst)
 
 ```
 
