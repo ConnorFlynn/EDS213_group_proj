@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(rerddap)
 library(tidyverse)
+library(here)
 ```
 
 ```{r}
@@ -73,10 +74,32 @@ SM_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll SM_
 chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 
+#Wind data for each buoy
+E_wind <- read.csv(here("data", "noaa_wind_data.csv"))
+
+W_wind <- read.csv(here("data", ))
+  
+SM_wind <- read.csv(here("data", ))
+
+wind <- rbind(E_wind, W_wind, SM_wind)
+
+
+```
+
+
+```{r}
+#clean date format for wind and SST
+
+clean_date <- wind %>%
+ 
+  mutate(dateTime = ymd_hms( dateTime, tz = "PST")
+         
+  unite("day_hour", day:hour, sep = "-") %>%
+
 ```
 
 ```{r}
-#Clean Data
+#Clean sst Data
 sst <- sst[-c(2)] #remove altitude column
 
 final_sst <- sst %>% 
