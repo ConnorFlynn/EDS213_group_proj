@@ -25,27 +25,21 @@ E_sst <- griddap('erdMWsstd8day_LonPM180', # 8 day composite SST E_buoy
  time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
  latitude = c(34.0, 34.5), #grid surrounding buoy
  longitude = c(-119.5, -120), #grid surrounding buoy
- fmt = "csv") 
-
-E_sst <- E_sst %>% 
+ fmt = "csv")  %>% 
   add_column(location = "east") #add ID column
 
 W_sst <- griddap('erdMWsstd8day_LonPM180', # 8 day composite SST W_buoy
  time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
  latitude = c(34.0, 34.5), #grid surrounding buoy
  longitude = c(-120, -120.5), #grid surrounding buoy
- fmt = "csv")
-
-W_sst <- W_sst %>% 
+ fmt = "csv") %>% 
   add_column(location = "west") #add ID column
 
 SM_sst <- griddap('erdMWsstd8day_LonPM180', # 8 day composite SST SM_buoy
  time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
  latitude = c(33.5, 34.0), #grid surrounding buoy
  longitude = c(-118.75, -119.25), #grid surrounding buoy
- fmt = "csv")
-
-SM_sst <- SM_sst %>%
+ fmt = "csv") %>%
   add_column(location = "SM") #add ID column
 
 sst <- rbind(E_sst, W_sst, SM_sst) #bind data
@@ -58,24 +52,27 @@ E_chloro <- griddap('erdMWchla8day_LonPM180',  # 8 day composite Chlorophyll E_b
   time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
   latitude = c(34.0, 34.5), #grid surrounding buoy
   longitude = c(-119.5, -120), #grid surrounding buoy
-  fmt = "csv")
+  fmt = "csv") %>% 
+  add_column(location = "east")
 
 W_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll E_buoy
   time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
   latitude = c(34.0, 34.5), #grid surrounding buoy
   longitude = c(-120, -120.5), #grid surrounding buoy
-  fmt = "csv")
+  fmt = "csv") %>% 
+  add_column(location = "west")
 
 SM_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll SM_buoy
   time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
   latitude = c(33.5, 34.0), #grid surrounding buoy
   longitude = c(-118.75, -119.25), #grid surrounding buoy
-  fmt = "csv")
+  fmt = "csv")%>% 
+  add_column(location = "SM")
 
 chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 
-#Wind data for each buoy
+#Wind data for each buoy and data
 tab_E <- read.table(here("data","east_wind.txt"), comment="", header=TRUE)
 write.csv(tab_E, "east_wind.csv", row.names=F, quote=F)
 
@@ -152,12 +149,26 @@ final_sst <- sst_clean %>%
 
 final_sst_avg <- final_sst %>% 
   group_by(location, date) %>% 
-  summarize(mean = mean(sst))
+  summarize(mean_sst = mean(sst))
 
 
 
 ```
 
+```{r}
+#clean chloro data
+
+chloro_clean <- chloro %>% 
+  mutate(date = ymd_hms(time, tz = "UTC")) %>% 
+  mutate(ymd_date = ymd(date, tz = NULL)) %>% 
+  mutate(date = ymd_date) %>% 
+  select(c("latitude", "longitude", "chlorophyll", "location", "date"))
+
+final_chloro_avg <- chloro_clean %>% 
+  group_by(location, date) %>%
+  summarize(mean_chloro = mean(chlorophyll))
+
+```
 
 ```{r}
 
@@ -172,8 +183,8 @@ west <- wind_sst %>%
   filter(location == "west") #filter for site
 
 ggplot(data = west) +
-  geom_point(aes(x = date, y = sst)) +
-  geom_point(aes(x = date , y = m.s))
+  #geom_point(aes(x = date, y = mean_sst, fill = "SST"), col = "blue") +
+  geom_point(aes(x = date, y = mean_wind, fill = "Wind"), col = "red")
 
 
 ```
