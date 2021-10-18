@@ -111,23 +111,25 @@ wind <- rbind(E_wind, W_wind, SM_wind)
 #clean date format for wind 
 
 wind <- wind %>%
-  unite("date", year:month:day, sep = "-") 
+  unite("date", year:month:day, sep = "-") %>% 
+  mutate(date = ymd(date, tz = NULL))
 
 ```
 
 
 ```{r}
 #clean data for sst data
-sst <- sst %>% 
+sst_clean <- sst %>% 
   mutate(date = ymd_hms(time, tz = "UTC")) %>% 
   mutate(ymd_date = ymd(date, tz = NULL)) %>% 
+  mutate(date = ymd_date) %>% 
   select(c("latitude", "longitude", "sst", "location", "date"))
 ```
 
 
 ```{r}
 #Clean sst Data
-final_sst <- sst %>% 
+final_sst <- sst_clean %>% 
   filter(sst > 0) %>% #remove NAs
   mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
   mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparision. 
@@ -138,7 +140,7 @@ final_sst <- sst %>%
 
 ```{r}
 
-wind_sst <- full_join(wind, final_sst)
+wind_sst <- left_join(wind, final_sst, by = c("date", "location"))
 
 ```
 
