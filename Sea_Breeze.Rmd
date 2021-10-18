@@ -76,11 +76,18 @@ chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 
 #Wind data for each buoy
-E_wind <- read.csv(here("data", "noaa_east_data.csv"))
-
-W_wind <- read.csv(here("data", ))
+E_wind <- read.csv(here("data", "noaa_east_data.csv")) %>% 
+  add_column(location = "east") %>% 
+  select(c("X.yr", "mo", "dy", "m.s", "location"))
   
-SM_wind <- read.csv(here("data", "noaa_santa_monica_data.csv"))
+
+W_wind <- read.csv(here("data", "noaa_west_data.csv" ))%>% 
+  add_column(location = "west") %>% 
+  select(c("X.yr", "mo", "dy", "m.s", "location"))
+  
+SM_wind <- read.csv(here("data", "noaa_santa_monica_data.csv"))%>% 
+  add_column(location = "SM") %>% 
+  select(c("X.yr", "mo", "dy", "m.s", "location"))
 
 wind <- rbind(E_wind, W_wind, SM_wind)
 
