@@ -53,30 +53,30 @@ E_chloro <- griddap('erdMWchla8day_LonPM180',  # 8 day composite Chlorophyll E_b
   latitude = c(34.0, 34.5), #grid surrounding buoy
   longitude = c(-119.5, -120), #grid surrounding buoy
   fmt = "csv") %>% 
-  add_column(location = "east")
+  add_column(location = "east") #add location term
 
 W_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll E_buoy
   time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
   latitude = c(34.0, 34.5), #grid surrounding buoy
   longitude = c(-120, -120.5), #grid surrounding buoy
   fmt = "csv") %>% 
-  add_column(location = "west")
+  add_column(location = "west") #add location term
 
 SM_chloro <- griddap('erdMWchla8day_LonPM180', # 8 day composite Chlorophyll SM_buoy
   time = c('2020-01-01T12:00:00Z','2021-01-01T12:00:00Z'), # Full year time period 2020
   latitude = c(33.5, 34.0), #grid surrounding buoy
   longitude = c(-118.75, -119.25), #grid surrounding buoy
   fmt = "csv")%>% 
-  add_column(location = "SM")
+  add_column(location = "SM") #add location term
 
 chloro <- rbind(E_chloro, W_chloro, SM_chloro) #Bind data
 
 
 #Wind data for each buoy and data cleaning
-tab_E <- read.table(here("data","east_wind.txt"), comment="", header=TRUE)
+tab_E <- read.table(here("data","east_wind.txt"), comment="", header=TRUE) #convert .txt file to .csv
 write.csv(tab_E, "east_wind.csv", row.names=F, quote=F)
 
-E_wind <- read.csv(here("east_wind.csv")) %>% 
+E_wind <- read.csv(here("east_wind.csv")) %>% # read in .csv, select coloumns and rename
   add_column(location = "east") %>% 
   select(c("X.YY", "MM", "DD", "WSPD", "location"))  %>% 
   rename(year = X.YY,
@@ -85,10 +85,10 @@ E_wind <- read.csv(here("east_wind.csv")) %>%
 E_wind <- E_wind[-c(1),]
   
 
-tab_W <- read.table(here("data","west_wind.txt"), comment="", header=TRUE)
+tab_W <- read.table(here("data","west_wind.txt"), comment="", header=TRUE) #convert .txt file to .csv
 write.csv(tab_W, "west_wind.csv", row.names=F, quote=F)
 
-W_wind <- read.csv(here("west_wind.csv"))%>% 
+W_wind <- read.csv(here("west_wind.csv"))%>% # read in .csv, select coloumns and rename
   add_column(location = "west") %>% 
   select(c("X.YY", "MM", "DD", "WSPD", "location"))  %>% 
   rename(year = X.YY,
@@ -97,10 +97,10 @@ W_wind <- read.csv(here("west_wind.csv"))%>%
 W_wind <- W_wind[-c(1),]
 
 
-tab_SM <- read.table(here("data","SM_wind.txt"), comment="", header=TRUE)
+tab_SM <- read.table(here("data","SM_wind.txt"), comment="", header=TRUE) #convert .txt file to .csv
 write.csv(tab_SM, "SM_wind.csv", row.names=F, quote=F)
 
-SM_wind <- read.csv(here("SM_wind.csv"))%>% 
+SM_wind <- read.csv(here("SM_wind.csv"))%>% # read in .csv, select coloumns and rename
   add_column(location = "SM") %>% 
   select(c("X.YY", "MM", "DD", "WSPD", "location"))  %>% 
   rename(year = X.YY,
@@ -108,7 +108,7 @@ SM_wind <- read.csv(here("SM_wind.csv"))%>%
          day = DD)
 SM_wind <- SM_wind[-c(1),]
 
-wind <- rbind(E_wind, W_wind, SM_wind)
+wind <- rbind(E_wind, W_wind, SM_wind) #bind data
 
 
 ```
@@ -166,14 +166,16 @@ chloro_clean <- chloro %>%
 
 final_chloro_avg <- chloro_clean %>% 
   group_by(location, date) %>%
-  summarize(mean_chloro = mean(chlorophyll))
+  summarize(mean_chloro = mean(chlorophyll, na.rm = T))
 
 ```
 
 ```{r}
-#combine daily wind and sst means
+#combine daily wind and sst and chloro means
 
 wind_sst <- left_join(wind_avg, final_sst_avg, by = c("date", "location"))
+
+chloro_wind_sst <- left_join(wind_sst, final_chloro_avg, by = c("date", "location"))
 
 ```
 
