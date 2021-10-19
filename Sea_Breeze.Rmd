@@ -122,9 +122,11 @@ wind <- wind %>%
   mutate(date = ymd(date, tz = NULL)) %>% 
   mutate(WSPD = as.numeric(WSPD))
 
+# see the data join chunk for na.rm explanation in code comment
+
 wind_avg <- wind %>% 
   group_by(location, date) %>% 
-  summarize(mean_wind = mean(WSPD))
+  summarize(mean_wind = mean(WSPD, na.rm = T))
 
 ```
 
@@ -146,10 +148,11 @@ final_sst <- sst_clean %>%
   mutate(sst = (sst * (9/5) + 32 )) %>% #convert to F
   mutate(sst = (sst - 3)) #accounting for SST Satelite error through anecdotal and buoy comparison. 
 
+# see the data join chunk for na.rm explanation in code comment
 
 final_sst_avg <- final_sst %>% 
   group_by(location, date) %>% 
-  summarize(mean_sst = mean(sst))
+  summarize(mean_sst = mean(sst, na.rm = T))
 
 
 
@@ -157,6 +160,7 @@ final_sst_avg <- final_sst %>%
 
 ```{r}
 #clean chloro data
+# see the data join chunk for na.rm explanation in code comment
 
 chloro_clean <- chloro %>% 
   mutate(date = ymd_hms(time, tz = "UTC")) %>% 
@@ -172,10 +176,11 @@ final_chloro_avg <- chloro_clean %>%
 
 ```{r}
 #combine daily wind and sst and chloro means
+# we changed left join to inner join in order to not include any rows that lack values for ANY of the 3 variables. We do not want any NA values in one col and have data in another col, because when we map everything together that data would be represented as if there was a zero value for tyhe variable that had NA. This change reduced the amount of rows by a couple hundred, This was primarily for the SST and Cholor data which had NA's but the wind data did not initially have NA's.
 
-wind_sst <- left_join(wind_avg, final_sst_avg, by = c("date", "location"))
+wind_sst <- inner_join(wind_avg, final_sst_avg, by = c("date", "location"))
 
-chloro_wind_sst <- left_join(wind_sst, final_chloro_avg, by = c("date", "location"))
+chloro_wind_sst <- inner_join(wind_sst, final_chloro_avg, by = c("date", "location"))
 
 ```
 
