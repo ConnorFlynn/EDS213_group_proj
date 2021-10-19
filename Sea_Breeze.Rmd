@@ -187,13 +187,13 @@ chloro_wind_sst <- inner_join(wind_sst, final_chloro_avg, by = c("date", "locati
 ```{r}
 #West Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
 
-west <- wind_sst %>% 
-  filter(location == "west") #filter for site
-
-ggplot(data = west) +
-  #geom_point(aes(x = date, y = mean_sst, fill = "SST"), col = "blue") +
-  geom_point(aes(x = date, y = mean_wind, fill = "Wind"), col = "red")
-
+# west <- wind_sst %>% 
+#   filter(location == "west") #filter for site
+# 
+# ggplot(data = west) +
+#   #geom_point(aes(x = date, y = mean_sst, fill = "SST"), col = "blue") +
+#   geom_point(aes(x = date, y = mean_wind, fill = "Wind"), col = "red")
+# 
 
 ```
 
@@ -201,11 +201,11 @@ ggplot(data = west) +
 ```{r}
 #East Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
 
-east_sst <- final_sst %>% 
-  filter(location == "east") #filter for site
+#east_sst <- final_sst %>% 
+#  filter(location == "east") #filter for site
 
-ggplot() +
-  geom_point(data = east_sst, aes(x = time, y = sst))
+#ggplot() +
+#  geom_point(data = east_sst, aes(x = time, y = sst))
 
 
 ```
