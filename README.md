@@ -11,10 +11,10 @@
 [Buoy Metadata](https://www.ndbc.noaa.gov/measdes.shtml)
 
 ##### 3. [NOAA Buoy Data (Santa Monica) standard meterological 2020](https://www.ndbc.noaa.gov/station_history.php?station=46025)
-[Buoy Metadata] (https://www.ndbc.noaa.gov/measdes.shtml)
+[Buoy Metadata](https://www.ndbc.noaa.gov/measdes.shtml)
 
 ##### 4. [NOAA Buoy Data (West Bouy) standard meterological 2020](https://www.ndbc.noaa.gov/station_history.php?station=46054)
-[Buoy Metadata] (https://www.ndbc.noaa.gov/measdes.shtml)
+[Buoy Metadata](https://www.ndbc.noaa.gov/measdes.shtml)
 
 
 
