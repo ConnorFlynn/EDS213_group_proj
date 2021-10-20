@@ -184,30 +184,11 @@ chloro_wind_sst <- inner_join(wind_sst, final_chloro_avg, by = c("date", "locati
 
 ```
 
-```{r}
-#West Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
-
-# west <- wind_sst %>% 
-#   filter(location == "west") #filter for site
-# 
-# ggplot(data = west) +
-#   #geom_point(aes(x = date, y = mean_sst, fill = "SST"), col = "blue") +
-#   geom_point(aes(x = date, y = mean_wind, fill = "Wind"), col = "red")
-# 
-
-```
 
 
 ```{r}
-#East Buoy figure (SST, Wind, Chloro(?)) <- We need monthly means
+#Daily Average Sea Surface Temperature from East, West, and Santa Monica Buoys
 
-east_sst <- chloro_wind_sst %>% 
-  filter(location == "east") %>% #filter for site
-  select(date, mean_sst)
-
-east_wind <- chloro_wind_sst %>% 
-  filter(location == "east") %>% 
-  select(date, mean_wind)
 
 ggplot(data = chloro_wind_sst, aes(x = date, y = mean_sst, color = location)) +
   geom_line() +
@@ -220,12 +201,29 @@ ggplot(data = chloro_wind_sst, aes(x = date, y = mean_sst, color = location)) +
 
 
 ```{r}
-# plot of wind
-ggplot(data = chloro_wind_sst, aes(x = date, y = mean_wind, color = location)) +
+#Monthly Average Wind from East, West, and Santa Monica Buoys
+
+month_mean <- chloro_wind_sst %>% 
+  select(location, date, mean_wind) %>% 
+  mutate(month = month(date)) %>% 
+  group_by(location, month) %>%
+  summarize(mean_wind = mean(mean_wind, na.rm = T))
+
+ggplot(data = month_mean, aes(x = month, y = mean_wind, color = location)) +
+  geom_line() +
+  labs(x = "Month",
+       y = "Monthly Average Wind Speed (knots)",
+       title = "Monthly Average Wind Speeds from East, West, and Santa Monica Buoys") +
+  ylim(0,15)
+```
+```{r}
+#Daily Average Chorophyll from East, West, and Santa Monica Buoys
+
+ggplot(data = chloro_wind_sst, aes(x = date, y = mean_chloro, color = location)) +
   geom_line() +
   labs(x = "Date",
-       y = "Daily Average Wind Speed (knots)",
-       title = "Daily Average Wind Speeds from East, West, and Santa Monica Buoys")
+       y = "Daily Average Chlorophyll (mg m^-3)",
+       title = "Daily Average Chlorophyll levels from East, West, and Santa Monica Buoys")
 ```
 
 
