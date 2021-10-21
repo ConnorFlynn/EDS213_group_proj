@@ -194,7 +194,8 @@ ggplot(data = chloro_wind_sst, aes(x = date, y = mean_sst, color = location)) +
   geom_line() +
   labs(x = "Date",
        y = "Daily Average Sea Surface Temperature (degC)",
-       title = "Daily Average Sea Surface Temperature from East, West, and Santa Monica Buoys")
+       title = "Daily Average Sea Surface Temperature from East, West, and Santa Monica Buoys",
+       color = "Location")
 
 
 ```
@@ -214,7 +215,8 @@ ggplot(data = month_mean, aes(x = month, y = mean_wind, color = location)) +
   geom_line() +
   labs(x = "Month",
        y = "Monthly Average Wind Speed (knots)",
-       title = "Monthly Average Wind Speeds from East, West, and Santa Monica Buoys") +
+       title = "Monthly Average Wind Speeds from East, West, and Santa Monica Buoys",
+       color = "Location") +
   ylim(0,15) +
   scale_x_discrete(limits=month.abb)
 ```
@@ -225,7 +227,8 @@ ggplot(data = chloro_wind_sst, aes(x = date, y = mean_chloro, color = location))
   geom_line() +
   labs(x = "Date",
        y = "Daily Average Chlorophyll (mg m^-3)",
-       title = "Daily Average Chlorophyll levels from East, West, and Santa Monica Buoys")
+       title = "Daily Average Chlorophyll levels from East, West, and Santa Monica Buoys",
+       color = "Location")
 ```
 
 
