@@ -203,18 +203,20 @@ ggplot(data = chloro_wind_sst, aes(x = date, y = mean_sst, color = location)) +
 ```{r}
 #Monthly Average Wind from East, West, and Santa Monica Buoys
 
-month_mean <- chloro_wind_sst %>% 
-  select(location, date, mean_wind) %>% 
-  mutate(month = month(date)) %>% 
+month_mean <- chloro_wind_sst %>%
+  select(location, date, mean_wind) %>%
+  mutate(month = month(date, label = TRUE)) %>%
+  mutate(month = as.numeric(month)) %>% 
   group_by(location, month) %>%
-  summarize(mean_wind = mean(mean_wind, na.rm = T))
+  summarize(mean_wind = mean(mean_wind, na.rm = T)) 
 
 ggplot(data = month_mean, aes(x = month, y = mean_wind, color = location)) +
   geom_line() +
   labs(x = "Month",
        y = "Monthly Average Wind Speed (knots)",
        title = "Monthly Average Wind Speeds from East, West, and Santa Monica Buoys") +
-  ylim(0,15)
+  ylim(0,15) +
+  scale_x_discrete(limits=month.abb)
 ```
 ```{r}
 #Daily Average Chorophyll from East, West, and Santa Monica Buoys
