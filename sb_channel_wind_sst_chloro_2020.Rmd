@@ -1,7 +1,7 @@
 ---
-title: "Sea_Breeze"
-author: "Squaaa"
-date: "10/6/2021"
+title: "Santa Barbara Channel Wind, Sea Surface Temperature, and Cholorophyll in 2020"
+author: "Grace Lewin, Jake Eisaguirre, Connor Flynn, Juliet Cohen"
+date: "10/25/2021"
 output: html_document
 editor_options: 
   chunk_output_type: inline
