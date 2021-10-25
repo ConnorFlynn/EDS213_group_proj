@@ -1,7 +1,7 @@
 # EDS 213 Group Project, Team Sea Breeze
 ## Juliet Cohen, Grace Lewin, Jake Eisaguirre, Connor Flynn
 ### Project Objective
-#### Question: How does wind speed affect sea surface temperature and chlorophyll in our local Santa Barbara Channel?
+#### Question: How does wind speed affect sea surface temperature and chlorophyll in our local Santa Barbara Channel during the year 2020?
 ### Methods
 #### Data Sources: 
 ##### 1. [NOAA Aquamodis Satelite (8 Day Composite SST) temp](https://coastwatch.pfeg.noaa.gov/erddap/griddap/erdMWsstd3day_LonPM180.graph?sst%5B(last)%5D%5B(0.0)%5D%5B(33.1125):(34.9)%5D%5B(-120.6625):(-118.875)%5D&.draw=surface&.vars=longitude%7Clatitude%7Csst&.colorBar=%7C%7C%7C%7C%7C&.bgColor=0xffccccff )
@@ -28,3 +28,8 @@ Issue #2
 
 
 #### For Assignment 10/19/21 look at the Sea_Breeze.Rmd to view code
+
+### Overview of results and further research ideas:
+- We did not see strong relationships between wind speed and sea surface temperature or between wind speed and chlorophyll in the Santa Barbara Channel in 2020.
+- We did see a slight trend in that the maximum sea surface temperature aligned temporally with lower wind speeds in the Santa Barbara Channel in 2020. 
+- An avenue for further research could be to look at data from multiple years together to see if there are annual trends that occur repeatedly throughout years. This might show stronger trends as it would lessen the effects of abnormal wind events in specific years.
