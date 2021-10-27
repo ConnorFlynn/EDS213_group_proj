@@ -1,0 +1,104 @@
+---
+title: "wind direction"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(rerddap)
+library(tidyverse)
+library(here)
+library(lubridate)
+```
+
+```{r}
+tab_E <- read.table(here("data","east_wind.txt"), comment="", header=TRUE) #convert .txt file to .csv
+write.csv(tab_E, "east_wind.csv", row.names=F, quote=F)
+
+E_wind <- read.csv(here("east_wind.csv")) %>% # read in .csv, select columns and rename
+  add_column(location = "east") %>% 
+  select(c("X.YY", "MM", "DD", "WSPD", "location","WDIR" ))  %>% 
+  filter(WDIR >= 270 & WDIR <= 360 )  %>% 
+  rename(year = X.YY,
+         month = MM,
+         day = DD)
+E_wind <- E_wind[-c(1),]
+  
+
+tab_W <- read.table(here("data","west_wind.txt"), comment="", header=TRUE) #convert .txt file to .csv
+write.csv(tab_W, "west_wind.csv", row.names=F, quote=F)
+
+W_wind <- read.csv(here("west_wind.csv"))%>% # read in .csv, select coloumns and rename
+  add_column(location = "west") %>% 
+  select(c("X.YY", "MM", "DD", "WSPD", "location", "WDIR"))  %>% 
+  filter(WDIR >= 270 & WDIR <= 360 )  %>% 
+  rename(year = X.YY,
+         month = MM,
+         day = DD)
+W_wind <- W_wind[-c(1),]
+
+
+tab_SM <- read.table(here("data","SM_wind.txt"), comment="", header=TRUE) #convert .txt file to .csv
+write.csv(tab_SM, "SM_wind.csv", row.names=F, quote=F)
+
+SM_wind <- read.csv(here("SM_wind.csv"))%>% # read in .csv, select coloumns and rename
+  add_column(location = "SM") %>% 
+  select(c("X.YY", "MM", "DD", "WSPD", "location", "WDIR"))  %>% 
+  filter(WDIR >= 270 & WDIR <= 360 )  %>% 
+  rename(year = X.YY,
+         month = MM,
+         day = DD)
+SM_wind <- SM_wind[-c(1),]
+
+wind <- rbind(E_wind, W_wind, SM_wind) #bind data
+
+
+wind <- wind %>%
+  unite("date", year:month:day, sep = "-") %>% 
+  mutate(date = ymd(date, tz = NULL)) %>% 
+  mutate(WSPD = as.numeric(WSPD))
+
+wind_avg <- wind %>% 
+  group_by(location, date) %>% 
+  summarize(mean_wind = mean(WSPD, na.rm = T))
+
+month_mean_wind <- wind_avg %>% 
+  select(location, date, mean_wind) %>% 
+  mutate(month = month(date)) %>% 
+  group_by(location, month) %>%
+  summarize(mean_wind = mean(mean_wind, na.rm = T))
+```
+
+```{r}
+windy_plot <- ggplot(data = month_mean_wind, aes(x = month, y = mean_wind, color = location)) +
+  geom_line() +
+  labs(x = "Month",
+       y = "Monthly Average Wind Speed (knots)",
+       title = "2020 Monthly Average Wind Speeds (270-360 degrees) from East, West, and Santa Monica Buoys") +
+  theme(plot.title =element_text(hjust = 0.5, size = 11)) +
+  scale_x_discrete(limits=month.abb) +
+  ylim(0,15)
+
+windy_plot
+
+```
+
+
+```{r}
+df <- data.frame(location=rep(c('West Buoy', 'East Buoy', 'Santa Monica'), each=2),
+                 wind=rep(c('Wind Direction 270-360', 'Wind Direction 0-270'), 
+                              times=3),
+                 points=c(41638, 10541, 18671, 33560, 24919, 27825))
+
+ggplot(df, aes(fill=wind, y=points, x=location)) + 
+  geom_bar(position='stack', stat='identity') +
+   labs(x = "Buoy Name",
+       y = "Number of Observations Recorded",
+       title = "2020 Wind Direction from East, Santa Monica, and West Buoys") +
+  theme(plot.title = element_text(hjust = 0.5)) 
+
+
+```
+
+```
+
